@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление обучением</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        #status { margin-top: 20px; font-size: 18px; }
+        #log { margin-top: 20px; text-align: left; white-space: pre-wrap; background: #f4f4f4; padding: 10px; border-radius: 5px; max-width: 600px; margin: auto; }
+    </style>
+</head>
+<body>
+    <h1>Управление обучением</h1>
+    <button onclick="startTraining()">Запустить обучение</button>
+    <button onclick="stopTraining()">Остановить обучение</button>
+    <div id="status">Статус: Ожидание</div>
+    <div id="log">
+        <h3>Лог:</h3>
+        <pre id="logContent"></pre>
+    </div>
+
+    <script>
+        function startTraining() {
+            fetch('http://127.0.0.1:5001/start-training', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => document.getElementById('status').innerText = "Статус: " + data.status)
+                .catch(error => console.error("Ошибка запуска обучения:", error));
+        }
+
+        function stopTraining() {
+            fetch('http://127.0.0.1:5001/stop-training', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => document.getElementById('status').innerText = "Статус: " + data.status)
+                .catch(error => console.error("Ошибка остановки обучения:", error));
+        }
+
+        function updateLog() {
+            fetch('http://127.0.0.1:5001/get-log')
+                .then(response => response.text())
+                .then(data => document.getElementById('logContent').innerText = data)
+                .catch(error => console.error("Ошибка получения логов:", error));
+        }
+
+        setInterval(updateLog, 2000);
+    </script>
+</body>
+</html>
